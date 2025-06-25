@@ -11,7 +11,11 @@
       </a-col>
 
       <a-col flex="auto"
-        ><a-menu v-model:selectedKeys="current" mode="horizontal" :items="items"
+        ><a-menu
+          v-model:selectedKeys="current"
+          mode="horizontal"
+          :items="items"
+          @click="doMenuClick"
       /></a-col>
 
       <a-col flex="120px">
@@ -27,7 +31,7 @@
 import { h, ref } from 'vue'
 import { HomeOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { type MenuProps } from 'ant-design-vue'
-const current = ref<string[]>(['mail'])
+import { useRouter } from 'vue-router'
 const items = ref<MenuProps['items']>([
   {
     key: '/',
@@ -36,12 +40,29 @@ const items = ref<MenuProps['items']>([
     title: '主页',
   },
   {
-    key: '/关于',
+    key: '/about',
     icon: () => h(AppstoreOutlined),
     label: '关于',
     title: '关于',
   },
 ])
+
+const router = useRouter()
+// 路由跳转事件
+const doMenuClick = ({ key }: { key: string }) => {
+  router.push({
+    path: key,
+  })
+}
+
+// 当前所在的页面
+const current = ref<string[]>([])
+router.afterEach((to, from, next) => {
+  // 高亮菜单
+  current.value = [to.path]
+})
+
+
 </script>
 
 <style scoped>
