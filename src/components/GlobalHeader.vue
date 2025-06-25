@@ -32,6 +32,7 @@ import { h, ref } from 'vue'
 import { HomeOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import { type MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
+import { healthUsingGet } from '@/api/api/mainController'
 const items = ref<MenuProps['items']>([
   {
     key: '/',
@@ -62,6 +63,9 @@ router.afterEach((to, from, next) => {
   current.value = [to.path]
 })
 
+healthUsingGet().then((res) => {
+  console.log(res)
+})
 
 </script>
 
