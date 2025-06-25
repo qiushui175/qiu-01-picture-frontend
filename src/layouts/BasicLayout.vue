@@ -1,7 +1,7 @@
 <template>
   <div id="basic-layout">
     <a-layout style="min-height: 100vh">
-      <a-layout-header>Header</a-layout-header>
+      <a-layout-header class="header"> <GlobaleHeader></GlobaleHeader></a-layout-header>
       <a-layout-content class="content">
         <router-view />
       </a-layout-content>
@@ -12,11 +12,19 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import GlobaleHeader from "@/components/GlobalHeader.vue";
+</script>
 
 <style scoped>
+#basic-layout .header {
+  background-color: white;
+  color: unset;
+  margin-bottom: 16px;
+}
+
 #basic-layout .content {
-  padding: 20px;
+  padding: 40px;
   background: linear-gradient(to bottom, #f5f5f5, #fff);
   margin-bottom: 28px;
 }
