@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { h, ref } from 'vue'
+import { h, onMounted, ref } from 'vue'
 import { HomeOutlined, AppstoreOutlined, LoginOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
@@ -62,7 +62,7 @@ const items = ref<MenuProps['items']>([
     title: '主页',
   },
   {
-    key: '/about',
+    key: '/admin/management',
     icon: () => h(AppstoreOutlined),
     label: '关于',
     title: '关于',
@@ -96,6 +96,10 @@ const doLogout = async () => {
     message.error(data.message || "退出登录失败")
   }
 }
+
+onMounted(async() => {
+  await loginUserStore.fetchLoginUser()
+})
 
 </script>
 
