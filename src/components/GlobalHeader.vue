@@ -18,9 +18,27 @@
           @click="doMenuClick"
       /></a-col>
 
-      <a-col flex="120px">
+      <a-col flex="200px">
         <div class="user-login-status">
-          <a-button type="primary" href="/user/login">登录</a-button>
+          <div v-if="loginUserStore.loginUser.id">
+            <a-dropdown>
+              <a-space align="start">
+                <a-avatar :src="loginUserStore.loginUser.userAvatar"></a-avatar>
+                <span class="user-name">{{ loginUserStore.loginUser.userName }}</span>
+              </a-space>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item @click="doLogout">
+                      <LoginOutlined />
+                      <span style="padding-left: 10px;">退出登录</span>
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </div>
+          <div v-else>
+            <a-button type="primary" href="/user/login">登录</a-button>
+          </div>
         </div>
       </a-col>
     </a-row>
@@ -29,10 +47,13 @@
 
 <script lang="ts" setup>
 import { h, ref } from 'vue'
-import { HomeOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue'
-import { type MenuProps } from 'ant-design-vue'
+import { HomeOutlined, AppstoreOutlined, LoginOutlined } from '@ant-design/icons-vue'
+import { message, type MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
-import { healthUsingGet } from '@/api/api/mainController'
+import { useLoginUserStore } from '@/stores/useLoginUserStore'
+import { userLogoutUsingPost } from '@/api/userController'
+
+const loginUserStore = useLoginUserStore()
 const items = ref<MenuProps['items']>([
   {
     key: '/',
@@ -63,9 +84,18 @@ router.afterEach((to, from, next) => {
   current.value = [to.path]
 })
 
-healthUsingGet().then((res) => {
-  console.log(res)
-})
+const doLogout = async () => {
+
+  const { data } = await userLogoutUsingPost()
+  if (data.code === 0) {
+    loginUserStore.setLoginUser({
+      userName: '未登录',
+    })
+    message.success('退出登录成功')
+  }else{
+    message.error(data.message || "退出登录失败")
+  }
+}
 
 </script>
 
@@ -83,5 +113,13 @@ healthUsingGet().then((res) => {
   margin-left: 10px;
   font-size: 20px;
   color: black;
+}
+
+#global-header .user-name {
+  display: block;
+  width: 100px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
