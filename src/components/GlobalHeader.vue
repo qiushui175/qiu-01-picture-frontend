@@ -14,7 +14,7 @@
         ><a-menu
           v-model:selectedKeys="current"
           mode="horizontal"
-          :items="items"
+          :items="currentItem"
           @click="doMenuClick"
       /></a-col>
 
@@ -29,8 +29,8 @@
               <template #overlay>
                 <a-menu>
                   <a-menu-item @click="doLogout">
-                      <LoginOutlined />
-                      <span style="padding-left: 10px;">退出登录</span>
+                    <LoginOutlined />
+                    <span style="padding-left: 10px">退出登录</span>
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { h, onMounted, ref } from 'vue'
+import { computed, h, onMounted, ref } from 'vue'
 import { HomeOutlined, AppstoreOutlined, LoginOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
@@ -64,10 +64,25 @@ const items = ref<MenuProps['items']>([
   {
     key: '/admin/management',
     icon: () => h(AppstoreOutlined),
-    label: '关于',
-    title: '关于',
+    label: '用户管理',
+    title: '用户管理',
   },
 ])
+
+// 过滤菜单项函数
+const filterMenuItems = (menuItems = [] as MenuProps['items']) => {
+  return menuItems?.filter((item) => {
+    if (item?.key?.toString().startsWith('/admin')) {
+      const user = loginUserStore.loginUser
+      if (!user || user.userRole !== 'admin') {
+        return false
+      }
+    }
+    return true
+  })
+}
+
+const currentItem = computed(() => filterMenuItems(items.value))
 
 const router = useRouter()
 // 路由跳转事件
@@ -85,22 +100,16 @@ router.afterEach((to, from, next) => {
 })
 
 const doLogout = async () => {
-
   const { data } = await userLogoutUsingPost()
   if (data.code === 0) {
     loginUserStore.setLoginUser({
       userName: '未登录',
     })
     message.success('退出登录成功')
-  }else{
-    message.error(data.message || "退出登录失败")
+  } else {
+    message.error(data.message || '退出登录失败')
   }
 }
-
-onMounted(async() => {
-  await loginUserStore.fetchLoginUser()
-})
-
 </script>
 
 <style scoped>

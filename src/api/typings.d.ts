@@ -43,23 +43,23 @@ declare namespace API {
 
   type deleteUserByIdUsingPOSTParams = {
     /** id */
-    id?: number
+    id?: number | string
   }
 
   type getUserByIdUsingGETParams = {
     /** id */
-    id?: number
+    id?: number | string | string
   }
 
   type getUserVOByIdUsingGETParams = {
     /** id */
-    id?: number
+    id?: number | string
   }
 
   type LoginUserVO = {
     createTime?: string
     editTime?: string
-    id?: number
+    id?: number | string
     updateTime?: string
     userAccount?: string
     userAvatar?: string
@@ -79,7 +79,7 @@ declare namespace API {
   type User = {
     createTime?: string
     editTime?: string
-    id?: number
+    id?: number | string
     isDelete?: number
     updateTime?: string
     userAccount?: string
@@ -105,7 +105,7 @@ declare namespace API {
 
   type UserQueryRequest = {
     current?: number
-    id?: number
+    id?: number | string
     pageSize?: number
     sortField?: string
     sortOrder?: 'ASC' | 'DESC'
@@ -123,7 +123,7 @@ declare namespace API {
   }
 
   type UserUpdateRequest = {
-    id?: number
+    id?: number | string
     userAccount?: string
     userAvatar?: string
     userName?: string
@@ -132,7 +132,7 @@ declare namespace API {
   }
 
   type UserVO = {
-    id?: number
+    id?: number | string
     userAccount?: string
     userAvatar?: string
     userName?: string

@@ -129,7 +129,7 @@ const total = ref(0)
 // reactive适用于对象内部属性是否改变，ref适用于对象本身是否改变
 const searchParams = reactive<API.UserQueryRequest>({
   current: 1,
-  pageSize: 2,
+  pageSize: 10,
 })
 
 // 分页器
@@ -184,6 +184,7 @@ const handleDeleteUser = async (id:string) => {
     return
   }
 
+  // 这里要使用string的id，因为使用模板生成代码暂时不能统一
   const { data: resData } = await deleteUserByIdUsingPost({id})
   if(resData.code === 0){
     message.success('删除成功')
