@@ -7,6 +7,7 @@ import HomePage from '@/pages/HomePage.vue'
 import AddPicturePage from '@/pages/picture/AddPicturePage.vue'
 import EditPicturePage from '@/pages/picture/EditPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
+import DetailPicturePage from '@/pages/picture/DetailPicturePage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,13 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomePage,
+    },
+
+    {
+      path: '/picture/:id',
+      name: '图片详情',
+      component: DetailPicturePage,
+      props: true,
     },
 
     {
