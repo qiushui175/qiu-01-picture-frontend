@@ -18,7 +18,7 @@
           @click="doMenuClick"
       /></a-col>
 
-      <a-col flex="200px">
+      <a-col flex="70px">
         <div class="user-login-status">
           <div v-if="loginUserStore.loginUser.id">
             <a-dropdown>
@@ -27,10 +27,10 @@
                 <span class="user-name">{{ loginUserStore.loginUser.userName }}</span>
               </a-space>
               <template #overlay>
-                <a-menu>
+                <a-menu style="width: 110px;">
                   <a-menu-item @click="doLogout">
                     <LoginOutlined />
-                    <span style="padding-left: 10px">退出登录</span>
+                    <span style="padding-left: 8px">退出登录</span>
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 import { computed, h, onMounted, ref } from 'vue'
-import { HomeOutlined, AppstoreOutlined, LoginOutlined } from '@ant-design/icons-vue'
+import { HomeOutlined, BarsOutlined, LoginOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
@@ -62,8 +62,14 @@ const items = ref<MenuProps['items']>([
     title: '主页',
   },
   {
+    key: '/add_picture',
+    icon: () => h(PlusCircleOutlined),
+    label: '创建图片',
+    title: '创建图片',
+  },
+  {
     key: '/admin/management',
-    icon: () => h(AppstoreOutlined),
+    icon: () => h(BarsOutlined),
     label: '用户管理',
     title: '用户管理',
   },
@@ -134,5 +140,9 @@ const doLogout = async () => {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+
+#global-header .user-login-status {
+  margin-right: 10px;
 }
 </style>
