@@ -54,6 +54,10 @@
 
           <!-- 图片操作 -->
           <a-space wrap>
+            <a-button :icon="h(DownloadOutlined)" type="default" @click="handleDownload"
+              >免费下载</a-button
+            >
+
             <a-button :icon="h(EditOutlined)" v-if="canEdit" type="default" @click="handleEdit"
               >编辑</a-button
             >
@@ -70,7 +74,8 @@
 <script setup lang="ts">
 import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue'
+import { downloadImage } from '@/utils'
+import { DeleteOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { computed, onMounted, ref, h } from 'vue'
 import { useRouter } from 'vue-router'
@@ -161,6 +166,19 @@ const handleDelete = async () => {
     message.error('删除失败')
   }
 }
+
+
+// 下载
+const handleDownload = () => {
+  downloadImage(picture.value?.url, picture.value?.name)
+}
 </script>
 
-<style scoped></style>
+<style scoped>
+
+#detail-picture-page{
+  padding: 0 3%;
+  margin-bottom: 20px;
+}
+
+</style>

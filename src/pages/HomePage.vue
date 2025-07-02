@@ -284,6 +284,7 @@ const isHovered = (id: string) => {
 
 <style scoped>
 #homePage {
+  padding: 0 3%;
   margin-bottom: 20px;
 }
 
