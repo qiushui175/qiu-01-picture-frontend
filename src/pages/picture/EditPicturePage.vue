@@ -126,6 +126,7 @@ onMounted(() => {
 const route = useRoute()
 const getOldPicture = async () => {
   const id = route.query?.id
+
   if (id) {
     const { data: resData } = await getPictureVoByIdUsingGet({ id })
 

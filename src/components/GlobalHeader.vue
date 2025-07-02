@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 import { computed, h, onMounted, ref } from 'vue'
-import { HomeOutlined, BarsOutlined, LoginOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
+import { HomeOutlined, BarsOutlined, LoginOutlined, PlusCircleOutlined, DatabaseOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
@@ -68,7 +68,13 @@ const items = ref<MenuProps['items']>([
     title: '创建图片',
   },
   {
-    key: '/admin/management',
+    key: '/admin/pictureManage',
+    icon: () => h(DatabaseOutlined),
+    label: '图片管理',
+    title: '图片管理',
+  },
+  {
+    key: '/admin/userManage',
     icon: () => h(BarsOutlined),
     label: '用户管理',
     title: '用户管理',

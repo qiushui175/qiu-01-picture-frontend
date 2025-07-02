@@ -23,6 +23,7 @@
       :data-source="dataList"
       :pagination="pagination"
       @change="handleTableChange"
+      :scroll="{x: '100%'}"
     >
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'userAvatar'">
@@ -130,7 +131,6 @@ const columns = [
   {
     title: 'id',
     dataIndex: 'id',
-    width: 180,
     align: 'center',
   },
   {
@@ -150,14 +150,12 @@ const columns = [
   {
     title: '头像',
     dataIndex: 'userAvatar',
-    width: 140,
     align: 'center',
   },
   {
     title: '简介',
     dataIndex: 'userProfile',
     align: 'center',
-    width: 300,
     ellipsis: true,
   },
   {
