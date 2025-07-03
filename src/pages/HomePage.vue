@@ -215,11 +215,13 @@ const isHovered = (id: string) => {
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16); /* 优化阴影效果 */
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 #homePage .custom-card-item:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32); /* 悬停时增强阴影 */
   transform: translateY(-2px);
+  cursor: pointer;
 }
 
 #homePage .card-container {
@@ -234,10 +236,12 @@ const isHovered = (id: string) => {
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
+  cursor: pointer;
 }
 
 #homePage .card-container:hover .card-image {
   transform: scale(1.05);
+  cursor: pointer;
 }
 
 #homePage .card-overlay {
@@ -251,11 +255,14 @@ const isHovered = (id: string) => {
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 #homePage .card-overlay.visible {
   opacity: 1;
   transform: translateY(0);
+  cursor: pointer;
+  user-select: none;
 }
 
 #homePage .card-title {
@@ -263,22 +270,28 @@ const isHovered = (id: string) => {
   font-size: 18px;
   font-weight: 600;
   color: white;
+  cursor: default;
 }
 
 #homePage .card-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+  user-select: none;
+  cursor: default;
 }
 
 #homePage .category-tag {
   margin-right: 4px;
+  user-select: none;
+  cursor: default;
 }
 
 #homePage .item-tag {
   background-color: rgba(255, 255, 255, 0.2) !important;
   color: white !important;
   border: none !important;
+  cursor: default;
 }
 </style>
 

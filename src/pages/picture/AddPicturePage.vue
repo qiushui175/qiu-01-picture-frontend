@@ -44,10 +44,22 @@
 <script setup lang="ts">
 import { editPictureUsingPost, listPictureTagCategoryUsingPost } from '@/api/pictureController'
 import PictureUpload from '@/components/PictureUpload.vue'
+import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 const picture = ref<API.PictureVO>()
+const router = useRouter()
+
+const userLoginStore = useLoginUserStore()
+
+onMounted(() => {
+  const loginUser = userLoginStore.loginUser
+  if (!loginUser.id) {
+    message.warn('请先登录!')
+    router.push('/user/login')
+  }
+})
 
 // 上传之后的操作
 const onSuccess = (newPicture: API.PictureVO) => {
@@ -62,7 +74,7 @@ const onSuccess = (newPicture: API.PictureVO) => {
 const pictureForm = reactive<API.PictureEditRequest>({})
 
 // 补充图片信息
-const router = useRouter()
+
 const handleFinish = async (values: any) => {
   const pictureId = picture.value?.id
   if (!pictureId) {

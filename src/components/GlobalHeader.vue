@@ -142,7 +142,7 @@ const doLogout = async () => {
 
 #global-header .user-name {
   display: block;
-  width: 100px;
+  width: 80px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

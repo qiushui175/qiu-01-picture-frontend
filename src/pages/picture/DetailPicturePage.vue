@@ -61,7 +61,37 @@
             <a-button :icon="h(EditOutlined)" v-if="canEdit" type="default" @click="handleEdit"
               >编辑</a-button
             >
+
+            <!-- <a-button :icon="h(LockOutlined)" v-if="canEdit && picture?.reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS" type="default" @click="handleLock(PIC_REVIEW_STATUS_ENUM.REJECT)"
+              >锁定</a-button
+            >
+
+            <a-button :icon="h(UnlockOutlined)" v-if="canEdit && picture?.reviewStatus === PIC_REVIEW_STATUS_ENUM.REJECT" type="default" @click="handleLock(PIC_REVIEW_STATUS_ENUM.PASS)"
+
+              >解锁</a-button
+            >
+
             <a-button :icon="h(DeleteOutlined)" v-if="canEdit" danger @click="handleDelete"
+              >删除</a-button
+            > -->
+
+            <a-button
+              :icon="h(LockOutlined)"
+              v-if="canEdit && picture?.reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS"
+              type="default"
+              @click="confirmLock(PIC_REVIEW_STATUS_ENUM.REJECT)"
+              >锁定</a-button
+            >
+
+            <a-button
+              :icon="h(UnlockOutlined)"
+              v-if="canEdit && picture?.reviewStatus === PIC_REVIEW_STATUS_ENUM.REJECT"
+              type="default"
+              @click="confirmLock(PIC_REVIEW_STATUS_ENUM.PASS)"
+              >解锁</a-button
+            >
+
+            <a-button :icon="h(DeleteOutlined)" v-if="canEdit" danger @click="confirmDelete"
               >删除</a-button
             >
           </a-space>
@@ -72,11 +102,22 @@
 </template>
 
 <script setup lang="ts">
-import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController'
+import {
+  deletePictureUsingPost,
+  getPictureVoByIdUsingGet,
+  pictureReviewUsingPost,
+} from '@/api/pictureController'
+import { PIC_REVIEW_STATUS_ENUM } from '@/constants/picture'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { downloadImage } from '@/utils'
-import { DeleteOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons-vue'
-import { message } from 'ant-design-vue'
+import {
+  DeleteOutlined,
+  DownloadOutlined,
+  EditOutlined,
+  LockOutlined,
+  UnlockOutlined,
+} from '@ant-design/icons-vue'
+import { message, Modal } from 'ant-design-vue'
 import { computed, onMounted, ref, h } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -135,6 +176,7 @@ const canEdit = computed(() => {
 const handleEdit = () => {
   if (!canEdit.value) {
     message.error('无权限')
+    return
   }
 
   router.push({
@@ -147,6 +189,7 @@ const handleEdit = () => {
 const handleDelete = async () => {
   if (!canEdit.value) {
     message.error('无权限')
+    return
   }
 
   const id = picture.value?.id
@@ -167,18 +210,90 @@ const handleDelete = async () => {
   }
 }
 
-
 // 下载
 const handleDownload = () => {
   downloadImage(picture.value?.url, picture.value?.name)
 }
+
+// 锁定/解锁
+const handleLock = (status: number) => {
+  if (!canEdit.value) {
+    message.error('无权限')
+    return
+  }
+
+  handleReview(picture.value!, status)
+}
+
+// 操作审核
+const handleReview = async (record: API.PictureVO, reviewStatus: number) => {
+  const reviewMessage =
+    reviewStatus == PIC_REVIEW_STATUS_ENUM.PASS ? '管理员操作通过' : '管理员操作拒绝'
+  const { data: resData } = await pictureReviewUsingPost({
+    id: record.id,
+    reviewMessage,
+    reviewStatus,
+  })
+
+  if (resData.code === 0) {
+    message.success('操作成功')
+    fetchPictureDetail()
+  } else {
+    message.error(resData.message || '操作失败')
+  }
+}
+
+// 删除确认对话框
+const confirmDelete = () => {
+  if (!canEdit.value) {
+    message.error('无权限')
+    return
+  }
+
+  Modal.confirm({
+    title: '确认删除',
+    content: '你确定要删除这张图片吗？此操作不可撤销。',
+    okText: '确认',
+    okType: 'danger',
+    cancelText: '取消',
+    onOk() {
+      handleDelete()
+    },
+    onCancel() {
+      // 取消操作，无需处理
+    },
+  })
+}
+
+// 锁定/解锁确认对话框
+const confirmLock = (status: number) => {
+  if (!canEdit.value) {
+    message.error('无权限')
+    return
+  }
+
+  const actionText = status === PIC_REVIEW_STATUS_ENUM.PASS ? '解锁' : '锁定'
+
+  Modal.confirm({
+    title: `确认${actionText}`,
+    content: `你确定要${actionText}这张图片吗？`,
+    okText: '确认',
+    okType: 'primary',
+    cancelText: '取消',
+    onOk() {
+      handleLock(status)
+    },
+    onCancel() {
+      // 取消操作，无需处理
+    },
+  })
+}
 </script>
 
 <style scoped>
-
-#detail-picture-page{
+#detail-picture-page {
   padding: 0 3%;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
+  overflow: hidden;
 }
-
 </style>
