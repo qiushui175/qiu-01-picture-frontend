@@ -33,7 +33,7 @@
 
     <!-- 图片列表 -->
     <a-list
-      :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 5 }"
+      :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl:4}"
       :data-source="dataList"
       :pagination="pagination"
       :loading="loading"
@@ -227,7 +227,7 @@ const isHovered = (id: string) => {
 #homePage .card-container {
   position: relative;
   width: 100%;
-  height: 300px; /* 统一图片高度 */
+  height: 330px; /* 统一图片高度 */
   object-fit: cover; /* 关键属性：保持比例并覆盖容器 */
   object-position: center; /* 图片居中显示 */
   overflow: hidden;

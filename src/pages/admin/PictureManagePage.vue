@@ -1,5 +1,17 @@
 <template>
   <div id="pictureManage">
+    <a-flex justify="space-between">
+      <h2>图片管理</h2>
+      <a-button
+        type="primary"
+        href="/admin/add_picture/batch"
+        size="large"
+        target="_blank"
+        style="margin-bottom: 16px"
+        >批量创建图片</a-button
+      >
+    </a-flex>
+
     <!-- 搜索表单 -->
     <a-form layout="inline" :model="searchParams" @finish="handleFinish">
       <a-form-item label="关键词">
@@ -25,7 +37,7 @@
           v-model:value="searchParams.reviewStatus"
           allow-clear
           placeholder="输入审核状态"
-          style="min-width: 120px;"
+          style="min-width: 120px"
           :options="PIC_REVIEW_STATUS_OPTIONS"
         ></a-select>
       </a-form-item>
@@ -271,10 +283,8 @@ const handleDeletepicture = async (id: string) => {
   }
 }
 
-
 // 删除确认对话框
 const confirmDelete = (id: string) => {
-
   Modal.confirm({
     title: '确认删除',
     content: '你确定要删除这张图片吗？此操作不可撤销。',
