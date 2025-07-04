@@ -227,7 +227,9 @@ const isHovered = (id: string) => {
 #homePage .card-container {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 300px; /* 统一图片高度 */
+  object-fit: cover; /* 关键属性：保持比例并覆盖容器 */
+  object-position: center; /* 图片居中显示 */
   overflow: hidden;
 }
 

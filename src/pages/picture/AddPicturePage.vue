@@ -3,7 +3,18 @@
     <!-- 标题 -->
     <h2 style="margin-bottom: 16px">创建图片</h2>
     <!-- 上传图片组件 -->
-    <PictureUpload :picture="picture" :onSuccess="onSuccess"></PictureUpload>
+
+    <a-tabs v-model:activeKey="uploadType">
+      <a-tab-pane key="file" tab="本地上传">
+        <PictureUpload :picture="picture" :onSuccess="onSuccess"></PictureUpload>
+      </a-tab-pane>
+
+      <a-tab-pane key="url" tab="URL 上传">
+        <UrlPictureUpload :picture="picture" :onSuccess="onSuccess"></UrlPictureUpload>
+      </a-tab-pane>
+    </a-tabs>
+
+    
     <!-- 图片表单 -->
     <a-form v-if="picture && picture.id" layout="vertical" :model="pictureForm" @finish="handleFinish">
       <a-form-item name="name" label="名称">
@@ -44,6 +55,7 @@
 <script setup lang="ts">
 import { editPictureUsingPost, listPictureTagCategoryUsingPost } from '@/api/pictureController'
 import PictureUpload from '@/components/PictureUpload.vue'
+import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
 import { onMounted, reactive, ref } from 'vue'
@@ -120,6 +132,9 @@ const listPictureTagCategory = async () => {
 onMounted(()=>{
   listPictureTagCategory()
 })
+
+
+const uploadType = ref<"file" | "url">('file')
 </script>
 
 <style scoped>

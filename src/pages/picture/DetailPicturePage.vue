@@ -4,7 +4,7 @@
       <!-- 图片预览 -->
       <a-col :sm="24" :md="16" :lg="14">
         <a-card title="图片预览">
-          <a-image :src="picture?.url" style="max-height: 600px; object-fit: contain" />
+          <div style="display: flex; justify-content: center; width: 100%; ;;"><a-image :src="picture?.url" style="max-height: 600px; object-fit: contain" /></div>
         </a-card>
       </a-col>
 
@@ -77,7 +77,11 @@
 
             <a-button
               :icon="h(LockOutlined)"
-              v-if="canEdit && picture?.reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS"
+              v-if="
+                canEdit &&
+                picture?.reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS &&
+                loginUserStore.loginUser.userRole === 'admin'
+              "
               type="default"
               @click="confirmLock(PIC_REVIEW_STATUS_ENUM.REJECT)"
               >锁定</a-button
@@ -85,7 +89,11 @@
 
             <a-button
               :icon="h(UnlockOutlined)"
-              v-if="canEdit && picture?.reviewStatus === PIC_REVIEW_STATUS_ENUM.REJECT"
+              v-if="
+                canEdit &&
+                picture?.reviewStatus === PIC_REVIEW_STATUS_ENUM.REJECT &&
+                loginUserStore.loginUser.userRole === 'admin'
+              "
               type="default"
               @click="confirmLock(PIC_REVIEW_STATUS_ENUM.PASS)"
               >解锁</a-button

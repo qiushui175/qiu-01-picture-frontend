@@ -92,8 +92,12 @@ const handleFinish = async (values: any) => {
     message.success('图片修改成功')
 
     // 跳转到图片详情页
+    // TODO: 要实现管理员和用户的跳转区分
+    // router.push({
+    //   path: `/picture/${pictureId}`,
+    // })
     router.push({
-      path: `/picture/${pictureId}`,
+      path: '/'
     })
   } else {
     message.error('图片修改失败')
