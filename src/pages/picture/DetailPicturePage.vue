@@ -220,7 +220,7 @@ const handleDelete = async () => {
 
 // 下载
 const handleDownload = () => {
-  downloadImage(picture.value?.url, picture.value?.name)
+  downloadImage(picture.value?.rawUrl ?? picture.value?.url, picture.value?.name)
 }
 
 // 锁定/解锁

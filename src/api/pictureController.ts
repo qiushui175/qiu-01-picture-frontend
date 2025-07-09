@@ -92,6 +92,66 @@ export async function listPictureVoByPageUsingPost(
   })
 }
 
+/** listPictureVOByPageUsingCache POST /api/picture/list/page/vo/cache */
+export async function listPictureVoByPageUsingCacheUsingPost(
+  body: API.PictureQueryRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePagePictureVO_>('/api/picture/list/page/vo/cache', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** listPictureVOByPageUsingLocalCache POST /api/picture/list/page/vo/local_cache */
+export async function listPictureVoByPageUsingLocalCacheUsingPost(
+  body: API.PictureQueryRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePagePictureVO_>('/api/picture/list/page/vo/local_cache', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** listPictureVOByPageUsingNewLocal POST /api/picture/list/page/vo/new_local */
+export async function listPictureVoByPageUsingNewLocalUsingPost(
+  body: API.PictureQueryRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePagePictureVO_>('/api/picture/list/page/vo/new_local', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** listPictureVOByPageUsingNewRedis POST /api/picture/list/page/vo/new_redis */
+export async function listPictureVoByPageUsingNewRedisUsingPost(
+  body: API.PictureQueryRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePagePictureVO_>('/api/picture/list/page/vo/new_redis', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** pictureReview POST /api/picture/review */
 export async function pictureReviewUsingPost(
   body: API.PictureReviewRequest,

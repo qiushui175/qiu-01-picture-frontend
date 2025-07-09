@@ -47,7 +47,7 @@
             @mouseleave="handleMouseLeave(item.id)"
             @click="doClickPicture(item)"
           >
-            <img :alt="item.name" :src="item.url" class="card-image" />
+            <img :alt="item.name" :src="item.thumbnailUrl ?? item.url" class="card-image" />
 
             <div class="card-overlay" :class="{ visible: isHovered(item.id) }">
               <div class="card-content">
