@@ -54,7 +54,10 @@
 
           <!-- 图片操作 -->
           <a-space wrap>
-            <a-button :icon="h(DownloadOutlined)" type="default" @click="handleDownload"
+            <a-button :icon="h(DownloadOutlined)" v-if="canEdit" type="default" @click="handleDownload"
+              >下载</a-button
+            >
+            <a-button :icon="h(DownloadOutlined)" v-else type="default" @click="handleDownload"
               >免费下载</a-button
             >
 
@@ -142,7 +145,7 @@ const fetchPictureDetail = async () => {
     if (resData.code === 0 && resData.data) {
       picture.value = resData.data
     } else {
-      message.error('图片信息获取失败')
+      message.warn(resData.message)
       router.push({
         path: '/',
       })

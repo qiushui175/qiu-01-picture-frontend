@@ -47,9 +47,6 @@ const doMenuClick = ({ key }: { key: string }) => {
 const current = ref<string[]>([])
 router.afterEach((to, from) => {
   // 高亮菜单
-  console.log('当前路由路径:', to.path)
-  console.log('匹配的菜单key:', current.value)
-
   current.value = [to.path]
 })
 

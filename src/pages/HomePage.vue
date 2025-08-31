@@ -32,13 +32,12 @@
     </div>
 
     <!-- 图片列表 -->
-    <a-list
+    <!-- <a-list
       :grid="{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl:4}"
       :data-source="dataList"
       :pagination="pagination"
       :loading="loading"
     >
-      <!-- 单张图片 -->
       <template #renderItem="{ item }">
         <a-list-item class="custom-card-item">
           <div
@@ -65,7 +64,18 @@
           </div>
         </a-list-item>
       </template>
-    </a-list>
+    </a-list> -->
+
+    <!-- 新组件替代原始写法 -->
+    <PictureList :dataList="dataList" :loading="loading"></PictureList>
+    <!-- 分页器 -->
+    <a-pagination
+      v-model:current="searchParams.current"
+      v-model:pageSize="searchParams.pageSize"
+      :total="total"
+      @change="onPageChange"
+      style="text-align: right;"
+    ></a-pagination>
   </div>
 </template>
 
@@ -74,6 +84,7 @@ import {
   listPictureTagCategoryUsingPost,
   listPictureVoByPageUsingPost,
 } from '@/api/pictureController'
+import PictureList from '@/components/PictureList.vue'
 import { message } from 'ant-design-vue'
 import { computed, onMounted, reactive, ref, shallowRef } from 'vue'
 import { useRouter } from 'vue-router'
@@ -92,17 +103,19 @@ const searchParams = reactive<API.PictureQueryRequest>({
 })
 
 // 分页器
+const onPageChange = (page: number, pageSize: number) => {
+  searchParams.pageSize = pageSize
+  searchParams.current = page
+  fetchData()
+}
+
 const pagination = computed(() => {
   return {
     current: searchParams.current,
     pageSize: searchParams.pageSize,
     total: total.value,
     showSizeChanger: true,
-    onChange: (page: number, pageSize: number) => {
-      searchParams.pageSize = pageSize
-      searchParams.current = page
-      fetchData()
-    },
+    onChange: onPageChange,
   }
 })
 
@@ -169,31 +182,6 @@ const listPictureTagCategory = async () => {
 onMounted(() => {
   listPictureTagCategory()
 })
-
-// 点击图片
-const router = useRouter()
-const doClickPicture = (item: API.PictureVO) => {
-  router.push({
-    path: `/picture/${item.id}`,
-  })
-}
-
-// 卡片悬停状态管理
-const hoveredCardId = shallowRef<string | null>(null)
-
-const handleMouseEnter = (id: string) => {
-  hoveredCardId.value = id
-}
-
-const handleMouseLeave = (id: string) => {
-  if (hoveredCardId.value === id) {
-    hoveredCardId.value = null
-  }
-}
-
-const isHovered = (id: string) => {
-  return hoveredCardId.value === id
-}
 </script>
 
 <style>
@@ -206,94 +194,6 @@ const isHovered = (id: string) => {
 
 #homePage.tag-bar {
   padding: 16px 0;
-}
-
-#homePage .custom-card-item {
-  padding: 0 !important;
-  margin: 12px;
-  border-radius: 6px; /* 添加圆角 */
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16); /* 优化阴影效果 */
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-#homePage .custom-card-item:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32); /* 悬停时增强阴影 */
-  transform: translateY(-2px);
-  cursor: pointer;
-}
-
-#homePage .card-container {
-  position: relative;
-  width: 100%;
-  height: 330px; /* 统一图片高度 */
-  object-fit: cover; /* 关键属性：保持比例并覆盖容器 */
-  object-position: center; /* 图片居中显示 */
-  overflow: hidden;
-}
-
-#homePage .card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-  cursor: pointer;
-}
-
-#homePage .card-container:hover .card-image {
-  transform: scale(1.05);
-  cursor: pointer;
-}
-
-#homePage .card-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-  color: white;
-  padding: 16px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-#homePage .card-overlay.visible {
-  opacity: 1;
-  transform: translateY(0);
-  cursor: pointer;
-  user-select: none;
-}
-
-#homePage .card-title {
-  margin: 0 0 8px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-  cursor: default;
-}
-
-#homePage .card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  user-select: none;
-  cursor: default;
-}
-
-#homePage .category-tag {
-  margin-right: 4px;
-  user-select: none;
-  cursor: default;
-}
-
-#homePage .item-tag {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
-  border: none !important;
-  cursor: default;
 }
 </style>
 

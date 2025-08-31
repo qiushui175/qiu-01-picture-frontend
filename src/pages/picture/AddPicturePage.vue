@@ -2,21 +2,38 @@
   <div id="AddPicturePage">
     <!-- 标题 -->
     <h2 style="margin-bottom: 16px">创建图片</h2>
-    <!-- 上传图片组件 -->
 
+    <a-typography-paragraph v-if="spaceId">
+      保存至空间：<a :href="`/space/${spaceId}`" target="_blank">{{ spaceName }}</a>
+    </a-typography-paragraph>
+    <a-typography-paragraph v-else>
+      保存至空间：<a :href="`/`">公共空间</a>
+      <br />注意！上传至公共空间会公开您的图片，如果不想公开，则要在<a :href="`/my_space`">私人空间</a
+      >上传图片
+    </a-typography-paragraph>
+
+    <!-- 上传图片组件 -->
     <a-tabs v-model:activeKey="uploadType">
       <a-tab-pane key="file" tab="本地上传">
-        <PictureUpload :picture="picture" :onSuccess="onSuccess"></PictureUpload>
+        <PictureUpload :picture="picture" :onSuccess="onSuccess" :spaceId="spaceId"></PictureUpload>
       </a-tab-pane>
 
       <a-tab-pane key="url" tab="URL 上传">
-        <UrlPictureUpload :picture="picture" :onSuccess="onSuccess"></UrlPictureUpload>
+        <UrlPictureUpload
+          :picture="picture"
+          :onSuccess="onSuccess"
+          :spaceId="spaceId"
+        ></UrlPictureUpload>
       </a-tab-pane>
     </a-tabs>
 
-    
     <!-- 图片表单 -->
-    <a-form v-if="picture && picture.id" layout="vertical" :model="pictureForm" @finish="handleFinish">
+    <a-form
+      v-if="picture && picture.id"
+      layout="vertical"
+      :model="pictureForm"
+      @finish="handleFinish"
+    >
       <a-form-item name="name" label="名称">
         <a-input v-model:value="pictureForm.name" placeholder="输入名称" allow-clear> </a-input>
       </a-form-item>
@@ -31,7 +48,12 @@
       </a-form-item>
 
       <a-form-item name="category" label="分类">
-        <a-auto-complete v-model:value="pictureForm.category" placeholder="输入分类" allow-clear :options="categoryOptions">
+        <a-auto-complete
+          v-model:value="pictureForm.category"
+          placeholder="输入分类"
+          allow-clear
+          :options="categoryOptions"
+        >
         </a-auto-complete>
       </a-form-item>
 
@@ -54,14 +76,20 @@
 
 <script setup lang="ts">
 import { editPictureUsingPost, listPictureTagCategoryUsingPost } from '@/api/pictureController'
+import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import PictureUpload from '@/components/PictureUpload.vue'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 const picture = ref<API.PictureVO>()
 const router = useRouter()
+
+const route = useRoute()
+const spaceId = computed(() => {
+  return route.query?.spaceId
+})
 
 const userLoginStore = useLoginUserStore()
 
@@ -95,6 +123,7 @@ const handleFinish = async (values: any) => {
 
   const { data: resData } = await editPictureUsingPost({
     id: pictureId,
+    spaceId: spaceId.value,
     ...values,
   })
 
@@ -129,12 +158,41 @@ const listPictureTagCategory = async () => {
     message.error('标签信息创建失败')
   }
 }
-onMounted(()=>{
+onMounted(() => {
   listPictureTagCategory()
 })
 
+const uploadType = ref<'file' | 'url'>('file')
 
-const uploadType = ref<"file" | "url">('file')
+// 空间名称获取
+const spaceName = ref<string>('')
+
+watch(
+  spaceId, // 监听的目标：spaceId计算属性
+  async (newId, oldId) => {
+    // 当ID为空时重置名称
+    if (!newId) {
+      spaceName.value = '默认空间'
+      return
+    }
+
+    // 避免重复请求（如果ID没变化）
+    if (newId === oldId) return
+
+    try {
+      // 调用接口获取名称（假设接口返回{ name: '空间名称' }）
+      const response = await getSpaceVoByIdUsingGet({ id: newId })
+      spaceName.value = response.data.data?.spaceName || '未知空间'
+    } catch (error) {
+      console.error('获取空间名称失败:', error)
+      spaceName.value = '获取失败'
+    }
+  },
+  {
+    immediate: true, // 组件初始化时立即执行一次
+    deep: true, // 深度监听（如果spaceId是复杂类型）
+  },
+)
 </script>
 
 <style scoped>
