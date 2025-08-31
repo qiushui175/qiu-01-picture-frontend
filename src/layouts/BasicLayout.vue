@@ -1,10 +1,13 @@
 <template>
   <div id="basic-layout">
     <a-layout style="min-height: 100vh">
-      <a-layout-header class="header"> <GlobaleHeader></GlobaleHeader></a-layout-header>
-      <a-layout-content class="content">
-        <router-view />
-      </a-layout-content>
+      <a-layout-header class="header"> <GlobalHeader></GlobalHeader></a-layout-header>
+      <a-layout>
+        <GlobalSider class="sider"></GlobalSider>
+        <a-layout-content class="content">
+          <router-view />
+        </a-layout-content>
+      </a-layout>
       <a-layout-footer class="footer">
         <a href="" target="_blank">秋水云图 by 秋水</a>
       </a-layout-footer>
@@ -13,18 +16,19 @@
 </template>
 
 <script setup lang="ts">
-import GlobaleHeader from "@/components/GlobalHeader.vue";
+import GlobalHeader from '@/components/GlobalHeader.vue'
+import GlobalSider from '@/components/GlobalSider.vue'
 </script>
 
 <style scoped>
 #basic-layout .header {
   background-color: white;
   color: unset;
-  margin-bottom: 16px;
+  margin-bottom: 1px;
 }
 
 #basic-layout .content {
-  padding: 40px;
+  padding: 28px;
   background: linear-gradient(to bottom, #f5f5f5, #fff);
   margin-bottom: 28px;
 }
@@ -38,4 +42,13 @@ import GlobaleHeader from "@/components/GlobalHeader.vue";
   right: 0;
   text-align: center;
 }
+
+#basic-layout .sider {
+  background: #fff;
+}
+
+/* #basic-layout :deep(.ant-menu-item){
+  
+} */
+
 </style>

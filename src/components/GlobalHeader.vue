@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 import { computed, h, onMounted, ref } from 'vue'
-import { HomeOutlined, BarsOutlined, LoginOutlined, PlusCircleOutlined, DatabaseOutlined } from '@ant-design/icons-vue'
+import { HomeOutlined, BarsOutlined, LoginOutlined, PlusCircleOutlined, DatabaseOutlined, AppstoreOutlined } from '@ant-design/icons-vue'
 import { message, type MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
@@ -72,6 +72,12 @@ const items = ref<MenuProps['items']>([
     icon: () => h(DatabaseOutlined),
     label: '图片管理',
     title: '图片管理',
+  },
+  {
+    key: '/admin/spaceManage',
+    icon: () => h(AppstoreOutlined),
+    label: '空间管理',
+    title: '空间管理',
   },
   {
     key: '/admin/userManage',
@@ -150,5 +156,9 @@ const doLogout = async () => {
 
 #global-header .user-login-status {
   margin-right: 10px;
+}
+
+#global-header :deep(.ant-menu-root){
+  border: 0px;
 }
 </style>
