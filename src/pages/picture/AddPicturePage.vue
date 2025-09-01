@@ -184,7 +184,7 @@ watch(
       const response = await getSpaceVoByIdUsingGet({ id: newId })
       spaceName.value = response.data.data?.spaceName || '未知空间'
     } catch (error) {
-      console.error('获取空间名称失败:', error)
+      // console.error('获取空间名称失败:', error)
       spaceName.value = '获取失败'
     }
   },

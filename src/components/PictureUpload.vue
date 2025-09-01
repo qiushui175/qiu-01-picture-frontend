@@ -38,7 +38,7 @@ const handleUpload = async ({ file }: any) => {
   const params : API.PictureUploadRequest = props.picture ? { id: props.picture.id } : {}
   params.spaceId = props.spaceId
 
-  console.log(params)
+  // console.log(params)
 
   const { data: resData } = await uploadPictureUsingPost(params, {}, file)
 

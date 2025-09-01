@@ -10,7 +10,7 @@
         >
           <a-progress
             type="dashboard"
-            :percent="((space?.totalSize * 100) / space?.maxSize).toFixed(1)"
+            :percent="Number(((space?.totalSize * 100) / space?.maxSize).toFixed(1))"
             size="small"
           />
         </a-tooltip>
@@ -19,6 +19,8 @@
         >
       </a-space>
     </a-flex>
+
+    <PictureSearchForm :onSearch="onSearch"></PictureSearchForm>
 
     <PictureList
       :dataList="dataList"
@@ -86,6 +88,7 @@ const loginUserStore = useLoginUserStore()
 
 import PictureList from '@/components/PictureList.vue'
 import { listPictureVoByPageUsingPost } from '@/api/pictureController'
+import PictureSearchForm from '@/components/PictureSearchForm.vue'
 
 const dataList = ref<API.PictureVO[]>([])
 const loading = ref(true)
@@ -139,6 +142,17 @@ const refresh = () => {
   fetchSpaceDetail()
   fetchData()
 }
+
+
+// 查询
+const onSearch = (newSearchParams: API.PictureQueryRequest) =>{
+  Object.keys(newSearchParams).forEach(key => {
+    searchParams[key] = newSearchParams[key]
+  })
+  searchParams.current = 1
+  fetchData()
+}
+
 </script>
 
 <style scoped>

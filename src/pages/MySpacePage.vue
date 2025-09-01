@@ -31,7 +31,7 @@ const checkUserSpace = async () => {
 
   if (res.data.code === 0) {
     const data = res.data.data
-    console.log(res.data)
+    // console.log(res.data)
     if (data?.records?.length > 0) {
       // 转跳到对应空间
       const space = data?.records[0]
