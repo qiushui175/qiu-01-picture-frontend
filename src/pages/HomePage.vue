@@ -67,7 +67,7 @@
     </a-list> -->
 
     <!-- 新组件替代原始写法 -->
-    <PictureList :dataList="dataList" :loading="loading"></PictureList>
+    <PictureList :dataList="dataList" :loading="loading" :showSearch="true"></PictureList>
     <!-- 分页器 -->
     <a-pagination
       v-model:current="searchParams.current"

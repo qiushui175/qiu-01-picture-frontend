@@ -32,12 +32,30 @@
                   </div>
 
                   <!-- 编辑和删除按钮 -->
-                  <div class="card-actions" v-if="props.showOp">
+                  <div class="card-actions">
                     <a-space>
-                      <a-button size="small" type="primary" @click="(e) => doEdit(e, item)">
+                      <a-button
+                        v-if="props.showSearch"
+                        size="small"
+                        type="primary"
+                        @click="(e) => doSearchByPicture(e, item)"
+                      >
+                        以图搜图
+                      </a-button>
+                      <a-button
+                        v-if="props.showOp"
+                        size="small"
+                        type="primary"
+                        @click="(e) => doEdit(e, item)"
+                      >
                         编辑
                       </a-button>
-                      <a-button size="small" danger @click.stop="(e) => doDelete(e, item)">
+                      <a-button
+                        v-if="props.showOp"
+                        size="small"
+                        danger
+                        @click.stop="(e) => doDelete(e, item)"
+                      >
                         删除
                       </a-button>
                     </a-space>
@@ -66,6 +84,7 @@ interface Props {
   dataList?: API.PictureVO[]
   loading?: boolean
   showOp?: boolean
+  showSearch?: boolean
   refresh?: () => void
 }
 
@@ -97,6 +116,12 @@ const handleMouseLeave = (id: string) => {
 
 const isHovered = (id: string) => {
   return hoveredCardId.value === id
+}
+
+// 以图搜图
+const doSearchByPicture = (e, picture: API.PictureVO) => {
+  e.stopPropagation()
+  window.open(`/search_picture?pictureId=${picture.id}`)
 }
 
 // 编辑

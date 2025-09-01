@@ -26,6 +26,7 @@
       :dataList="dataList"
       :loading="loading"
       :showOp="true"
+      :showSearch="true"
       :refresh="refresh"
     ></PictureList>
     <!-- 分页器 -->
