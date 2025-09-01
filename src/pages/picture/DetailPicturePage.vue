@@ -4,7 +4,9 @@
       <!-- 图片预览 -->
       <a-col :sm="24" :md="16" :lg="14">
         <a-card title="图片预览">
-          <div style="display: flex; justify-content: center; width: 100%; ;;"><a-image :src="picture?.url" style="max-height: 600px; object-fit: contain" /></div>
+          <div style="display: flex; justify-content: center; width: 100% ;">
+            <a-image :src="picture?.url" style="max-height: 600px; object-fit: contain" />
+          </div>
         </a-card>
       </a-col>
 
@@ -50,11 +52,28 @@
             <a-descriptions-item label="大小">
               {{ formattedPictureSize(picture?.picSize) }}
             </a-descriptions-item>
+
+            <a-descriptions-item label="主色调">
+              <a-space>
+                {{ picture?.picColor ?? '-' }}
+                <div
+                  :style="{
+                    width: '16px',
+                    height: '16px',
+                    backgroundColor: toHexColor(picture?.picColor),
+                  }"
+                ></div>
+              </a-space>
+            </a-descriptions-item>
           </a-descriptions>
 
           <!-- 图片操作 -->
           <a-space wrap>
-            <a-button :icon="h(DownloadOutlined)" v-if="canEdit" type="default" @click="handleDownload"
+            <a-button
+              :icon="h(DownloadOutlined)"
+              v-if="canEdit"
+              type="default"
+              @click="handleDownload"
               >下载</a-button
             >
             <a-button :icon="h(DownloadOutlined)" v-else type="default" @click="handleDownload"
@@ -299,6 +318,19 @@ const confirmLock = (status: number) => {
     },
   })
 }
+
+function toHexColor(input: string):string {
+  if (!input) {
+    return '#FFF' // 或者返回默认颜色
+  }
+
+  const colorValue = input.startsWith('0x') ? input.slice(2) : input
+
+  const hexColor = parseInt(colorValue, 16).toString(16).padStart(6, '0')
+  
+  return `#${hexColor}`
+}
+
 </script>
 
 <style scoped>

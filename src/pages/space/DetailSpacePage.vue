@@ -20,7 +20,7 @@
       </a-space>
     </a-flex>
 
-    <PictureSearchForm :onSearch="onSearch"></PictureSearchForm>
+    <PictureSearchForm :onSearch="onSearch" :onColorChange="onColorChange"></PictureSearchForm>
 
     <PictureList
       :dataList="dataList"
@@ -88,7 +88,7 @@ const formattedSpaceSize = (size?: number) => {
 const loginUserStore = useLoginUserStore()
 
 import PictureList from '@/components/PictureList.vue'
-import { listPictureVoByPageUsingPost } from '@/api/pictureController'
+import { listPictureVoByPageUsingPost, searchPictureByColorUsingPost } from '@/api/pictureController'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
 
 const dataList = ref<API.PictureVO[]>([])
@@ -152,6 +152,22 @@ const onSearch = (newSearchParams: API.PictureQueryRequest) =>{
   })
   searchParams.current = 1
   fetchData()
+}
+
+// 按颜色搜索
+const onColorChange = async (color: string)=>{
+  loading.value = true
+
+  // 请求
+  const { data: resData } = await searchPictureByColorUsingPost({picColor: color, spaceId: props.id})
+
+  if (resData.code === 0 && resData.data) {
+    dataList.value = resData.data ?? []
+  } else {
+    message.error(resData.message || '获取图片列表失败')
+  }
+
+  loading.value = false
 }
 
 </script>

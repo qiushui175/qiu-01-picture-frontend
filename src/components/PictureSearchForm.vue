@@ -77,6 +77,12 @@
         </a-space>
       </a-form-item>
     </a-form>
+
+    <a-form>
+      <a-form-item label="按照颜色搜索">
+        <color-picker format="hex" @pureColorChange="props.onColorChange"></color-picker>
+      </a-form-item>
+    </a-form>
   </div>
 </template>
 
@@ -85,6 +91,7 @@ import { reactive, ref } from 'vue'
 
 interface Props {
   onSearch?: (searchParams: API.PictureEditRequest) => void
+  onColorChange?: (color: string) => void
 }
 const props = defineProps<Props>()
 
@@ -127,6 +134,10 @@ const doClear = () => {
 
   props.onSearch?.(searchParams)
 }
+
+// 颜色查询
+import { ColorPicker } from 'vue3-colorpicker'
+import 'vue3-colorpicker/style.css'
 </script>
 
 <style scoped>
