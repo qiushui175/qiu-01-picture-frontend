@@ -94,7 +94,7 @@ const changeScale = (num: number) => {
 const handleConfirm = () => {
   cropperRef.value.getCropBlob((blob: Blob) => {
     const end = props.picture?.picFormat ?? 'png'
-    const fileName = (props.picture?.name || 'image') + "." + end
+    const fileName = (props.picture?.name || 'image') + "." + end.toLowerCase()
     const file = new File([blob], fileName, { type: blob.type })
 
     // 上传图片
