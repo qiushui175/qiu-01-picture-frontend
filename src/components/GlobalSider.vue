@@ -47,12 +47,20 @@ const doMenuClick = ({ key }: { key: string }) => {
 const current = ref<string[]>([])
 router.afterEach((to, from) => {
   // 高亮菜单
-  current.value = [to.path]
+  if (to.path.startsWith('/space/')) {
+    current.value = ['/my_space']
+  } else {
+    current.value = [to.path]
+  }
 })
 
 // 组件挂载时初始化高亮状态
 onMounted(() => {
-  current.value = [router.currentRoute.value.path]
+  if (router.currentRoute.value.path.startsWith('/space/')) {
+    current.value = ['/my_space']
+  } else {
+    current.value = [router.currentRoute.value.path]
+  }
 })
 </script>
 <style scoped>
