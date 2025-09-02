@@ -4,7 +4,7 @@
       <!-- 图片预览 -->
       <a-col :sm="24" :md="16" :lg="14">
         <a-card title="图片预览">
-          <div style="display: flex; justify-content: center; width: 100% ;">
+          <div style="display: flex; justify-content: center; width: 100%">
             <a-image :src="picture?.url" style="max-height: 600px; object-fit: contain" />
           </div>
         </a-card>
@@ -68,16 +68,24 @@
           </a-descriptions>
 
           <!-- 图片操作 -->
+
+          <!-- 分享图片 -->
+          <ShareModal ref="shareModalRef" :link="shareLink"></ShareModal>
+
           <a-space wrap>
             <a-button
               :icon="h(DownloadOutlined)"
               v-if="canEdit"
-              type="default"
+              type="primary"
               @click="handleDownload"
               >下载</a-button
             >
-            <a-button :icon="h(DownloadOutlined)" v-else type="default" @click="handleDownload"
+            <a-button :icon="h(DownloadOutlined)" v-else type="primary" @click="handleDownload"
               >免费下载</a-button
+            >
+
+            <a-button :icon="h(ShareAltOutlined)" ghost type="primary" @click="handleShare"
+              >分享</a-button
             >
 
             <a-button :icon="h(EditOutlined)" v-if="canEdit" type="default" @click="handleEdit"
@@ -137,6 +145,7 @@ import {
   getPictureVoByIdUsingGet,
   pictureReviewUsingPost,
 } from '@/api/pictureController'
+import ShareModal from '@/components/ShareModal.vue'
 import { PIC_REVIEW_STATUS_ENUM } from '@/constants/picture'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { downloadImage } from '@/utils'
@@ -145,6 +154,7 @@ import {
   DownloadOutlined,
   EditOutlined,
   LockOutlined,
+  ShareAltOutlined,
   UnlockOutlined,
 } from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
@@ -319,7 +329,7 @@ const confirmLock = (status: number) => {
   })
 }
 
-function toHexColor(input: string):string {
+function toHexColor(input: string): string {
   if (!input) {
     return '#FFF' // 或者返回默认颜色
   }
@@ -327,10 +337,19 @@ function toHexColor(input: string):string {
   const colorValue = input.startsWith('0x') ? input.slice(2) : input
 
   const hexColor = parseInt(colorValue, 16).toString(16).padStart(6, '0')
-  
+
   return `#${hexColor}`
 }
 
+// 分享操作
+const shareModalRef = ref()
+const shareLink = ref<string>()
+const handleShare = () => {
+  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.value?.id}`
+  if(shareModalRef.value){
+    shareModalRef.value.openModal()
+  }
+}
 </script>
 
 <style scoped>
