@@ -14,12 +14,20 @@
             size="small"
           />
         </a-tooltip>
-        <a-button type="primary" :href="`/add_picture?spaceId=${id}`" size="large" target="_blank"
+        <a-button type="primary" :icon="h(PlusOutlined)" :href="`/add_picture?spaceId=${id}`" size="large" target="_blank"
           >上传图片</a-button
         >
+
+        <a-button type="primary" ghost :icon="h(EditOutlined)" size="large" @click="doBatchEdit"
+          >批量编辑</a-button
+        >
+        <BatchEditPictureModal ref="batchEditPictureModalRef" :spaceId="props.id"
+          :pictureList="dataList"
+          :onSuccess="onBatchEditSuccess"
+        ></BatchEditPictureModal>
       </a-space>
     </a-flex>
-
+    
     <PictureSearchForm :onSearch="onSearch" :onColorChange="onColorChange"></PictureSearchForm>
 
     <PictureList
@@ -44,8 +52,9 @@
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, h } from 'vue'
 import { useRouter } from 'vue-router'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons-vue'
 
 interface Props {
   id: string | number
@@ -73,9 +82,6 @@ const fetchSpaceDetail = async () => {
   }
 }
 
-onMounted(() => {
-  fetchSpaceDetail()
-})
 
 // 改为计算属性
 const formattedSpaceSize = (size?: number) => {
@@ -90,6 +96,7 @@ const loginUserStore = useLoginUserStore()
 import PictureList from '@/components/PictureList.vue'
 import { listPictureVoByPageUsingPost, searchPictureByColorUsingPost } from '@/api/pictureController'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
+import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
 
 const dataList = ref<API.PictureVO[]>([])
 const loading = ref(true)
@@ -135,15 +142,14 @@ const onPageChange = (page: number, pageSize: number) => {
   fetchData()
 }
 
-onMounted(() => {
-  fetchData()
-})
 
 const refresh = () => {
   fetchSpaceDetail()
   fetchData()
 }
-
+onMounted(() => {
+  refresh()
+})
 
 // 查询
 const onSearch = (newSearchParams: API.PictureQueryRequest) =>{
@@ -169,6 +175,17 @@ const onColorChange = async (color: string)=>{
 
   loading.value = false
 }
+
+// 批量修改操作
+const batchEditPictureModalRef = ref()
+const doBatchEdit = () =>{
+  batchEditPictureModalRef.value?.openModal()
+}
+
+const onBatchEditSuccess = ()=>{
+  fetchData()
+}
+
 
 </script>
 
