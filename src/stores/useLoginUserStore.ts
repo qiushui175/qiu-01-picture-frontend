@@ -11,6 +11,12 @@ export const useLoginUserStore = defineStore('login', () => {
     userName: '未登录',
   })
 
+  // 路由重定向
+  const redirectPath = ref<string>('')
+  function setRedirectPath(path: string) {
+    redirectPath.value = path
+  }
+
   async function fetchLoginUser() {
     const { data } = await getLoginUserUsingGet()
     if (data.code === 0 && data.data) {
@@ -22,5 +28,5 @@ export const useLoginUserStore = defineStore('login', () => {
   }
 
   // 返回
-  return { loginUser, setLoginUser, fetchLoginUser }
+  return { loginUser, setLoginUser, fetchLoginUser, redirectPath, setRedirectPath }
 })

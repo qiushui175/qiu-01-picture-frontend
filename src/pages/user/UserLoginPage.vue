@@ -40,6 +40,7 @@ import { reactive } from 'vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
 import router from '@/router'
+import { useRoute } from 'vue-router'
 
 const formState = reactive<API.UserLoginRequest>({
   userAccount: '',
@@ -48,21 +49,28 @@ const formState = reactive<API.UserLoginRequest>({
 
 // 获取全局的登录用户信息
 const loginUserStore = useLoginUserStore()
-
+const route = useRoute()
 const handleSubmit = async (value: any) => {
   const { data } = await userLoginUsingPost(value)
   if (data.code === 0 && data.data) {
     await loginUserStore.fetchLoginUser()
     message.success('登录成功')
+
+    // 获取需要跳转的路径，优先级：路由参数中的redirect > 存储的路径 > 主页
+    const redirectPath = route.query.redirect || loginUserStore.redirectPath || '/'
+
+    // 跳转到目标页面
     router.push({
-      path: '/',
+      path: redirectPath as string,
       replace: true,
     })
+
+    // 重置跳转路径
+    loginUserStore.setRedirectPath('')
   } else {
     message.error(data.message || '登录失败')
   }
 }
-
 </script>
 
 <style scoped>

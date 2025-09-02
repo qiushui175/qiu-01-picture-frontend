@@ -14,6 +14,7 @@ import AddSpacePage from '@/pages/space/AddSpacePage.vue'
 import MySpacePage from '@/pages/MySpacePage.vue'
 import DetailSpacePage from '@/pages/space/DetailSpacePage.vue'
 import SearchPicturePage from '@/pages/picture/SearchPicturePage.vue'
+import { useLoginUserStore } from '@/stores/useLoginUserStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,7 @@ const router = createRouter({
       name: '图片详情',
       component: DetailPicturePage,
       props: true,
+      meta: { requiresAuth: true }
     },
 
     {
@@ -47,48 +49,56 @@ const router = createRouter({
       path: '/admin/userManage',
       name: '用户管理',
       component: UserManagePage,
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/admin/pictureManage',
       name: '图片管理',
       component: PictureManagePage,
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/admin/spaceManage',
       name: '空间管理',
       component: SpaceManagePage,
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/add_space',
       name: '创建空间',
       component: AddSpacePage,
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/add_picture',
       name: '创建图片',
       component: AddPicturePage,
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/admin/add_picture/batch',
       name: '批量创建图片',
       component: AddPictureBatchPage,
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/edit_picture',
       name: '编辑图片',
       component: EditPicturePage,
+      meta: { requiresAuth: true }
     },
 
     {
       path: '/my_space',
       name: '我的空间',
       component: MySpacePage,
+      meta: { requiresAuth: true }
     },
 
     {
@@ -96,6 +106,7 @@ const router = createRouter({
       name: '空间详情',
       component: DetailSpacePage,
       props: true,
+      meta: { requiresAuth: true }
     },
 
     {
