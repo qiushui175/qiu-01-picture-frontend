@@ -3,7 +3,27 @@
     <!-- 标题 -->
     <h2 style="margin-bottom: 16px">修改图片</h2>
     <!-- 上传图片组件 -->
-    <PictureUpload :picture="picture" :onSuccess="onSuccess"></PictureUpload>
+    <!-- 将上传修改图片该为对图片的编辑操作 -->
+    <!-- <PictureUpload
+      :picture="picture"
+      :onSuccess="onSuccess"
+      @click="(e) => onClickPicture(e)"
+    ></PictureUpload> -->
+    <div class="img-show">
+      <img v-if="picture?.url" :src="picture?.url" @click="doEditPicture" />
+
+      <a-button type="primary" ghost :icon="h(EditOutlined)" size="large" @click="doEditPicture"
+        >编辑图片</a-button
+      >
+      <ImageCropper
+        ref="editPictureModalRef"
+        :imageUrl="picture?.rawUrl"
+        :onSuccess="onCropSuccess"
+        :spaceId="picture?.spaceId"
+        :picture="picture"
+      ></ImageCropper>
+    </div>
+
     <!-- 图片表单 -->
     <a-form
       v-if="picture && picture.id"
@@ -57,10 +77,12 @@ import {
   getPictureVoByIdUsingGet,
   listPictureTagCategoryUsingPost,
 } from '@/api/pictureController'
+import ImageCropper from '@/components/ImageCropper.vue'
 import PictureUpload from '@/components/PictureUpload.vue'
 import { message } from 'ant-design-vue'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { EditOutlined } from '@ant-design/icons-vue'
 const picture = ref<API.PictureVO>()
 
 // 上传之后的操作
@@ -70,6 +92,11 @@ const onSuccess = (newPicture: API.PictureVO) => {
 
   // 回填名称
   pictureForm.name = newPicture.name
+}
+
+const onCropSuccess = (newPicture: API.PictureVO) => {
+  // 设置图片
+  picture.value = newPicture
 }
 
 // 图片表单
@@ -143,16 +170,15 @@ const getOldPicture = async () => {
       pictureForm.introduction = data.introduction
       pictureForm.category = data.category
       pictureForm.tags = data.tags
-
-    }else{
+    } else {
       message.error('图片信息获取失败')
       router.push({
-      path: '/'
-    })
+        path: '/',
+      })
     }
-  }else{
+  } else {
     router.push({
-      path: '/add_picture'
+      path: '/add_picture',
     })
   }
 }
@@ -160,11 +186,31 @@ const getOldPicture = async () => {
 onMounted(() => {
   getOldPicture()
 })
+
+// 图片裁剪编辑
+const editPictureModalRef = ref()
+const doEditPicture = () => {
+  editPictureModalRef.value?.openModal()
+}
 </script>
 
 <style scoped>
 #EditPicturePage {
   max-width: 620px;
   margin: 0 auto;
+}
+
+#EditPicturePage .img-show img {
+  max-width: 100%;
+  max-height: 380px;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+#EditPicturePage .img-show {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

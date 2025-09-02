@@ -14,14 +14,31 @@
         <div class="ant-upload-text">点击或拖拽上传</div>
       </div>
     </a-upload>
+
+    <div style="margin-top: 10px; margin-bottom: 20px; display: flex; text-align: center; width: 100%; justify-content: space-around;">
+
+      <a-button  v-if="picture?.url" type="primary" ghost :icon="h(EditOutlined)" size="large" @click="doEditPicture"
+        >编辑图片</a-button
+      >
+    </div>
+    
+      <ImageCropper
+        ref="editPictureModalRef"
+        :imageUrl="picture?.rawUrl"
+        :onSuccess="onCropSuccess"
+        :spaceId="picture?.spaceId"
+        :picture="picture"
+      ></ImageCropper>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, h } from 'vue'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { UploadProps } from 'ant-design-vue'
 import { uploadPictureUsingPost } from '@/api/pictureController'
+import { EditOutlined } from '@ant-design/icons-vue'
+import ImageCropper from '@/components/ImageCropper.vue'
 
 // 创建传递值的对象
 interface Props {
@@ -65,6 +82,24 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
   }
   return isJpgOrPng && isLt2M
 }
+
+
+// 图片裁剪编辑
+const editPictureModalRef = ref()
+const doEditPicture = () => {
+  // 增加判断，确保组件已加载且方法存在
+  if (editPictureModalRef.value && typeof editPictureModalRef.value.openModal === 'function') {
+    editPictureModalRef.value.openModal()
+  } else {
+    console.error('ImageCropper 组件未正确加载或未暴露 openModal 方法')
+  }
+}
+
+const onCropSuccess = (newPicture: API.PictureVO) => {
+  // 设置图片
+  props.onSuccess?.(newPicture)
+}
+
 </script>
 <style scoped>
 .picture-upload :deep(.ant-upload) {
