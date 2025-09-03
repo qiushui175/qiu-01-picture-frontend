@@ -15,11 +15,15 @@
       </div>
     </a-upload>
 
-    <div style="margin-top: 10px; margin-bottom: 20px; display: flex; text-align: center; width: 100%; justify-content: space-around;">
+    <div style="margin-top: 10px; margin-bottom: 20px; display: flex; text-align: center; width: 100%; justify-content: center; gap: 20px;">
 
       <a-button  v-if="picture?.url" type="primary" ghost :icon="h(EditOutlined)" size="large" @click="doEditPicture"
         >编辑图片</a-button
       >
+
+      <a-button type="primary" :icon="h(ExperimentOutlined)" size="large" @click="doExpandPicture"
+          >AI扩图</a-button
+        >
     </div>
     
       <ImageCropper
@@ -29,6 +33,13 @@
         :spaceId="picture?.spaceId"
         :picture="picture"
       ></ImageCropper>
+
+
+      <PictureOutPainting
+          :picture="picture"
+          ref="expandPictureModalRef"
+          :onSuccess="onExpandSuccess"
+        ></PictureOutPainting>
   </div>
 </template>
 <script lang="ts" setup>
@@ -37,8 +48,9 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { UploadProps } from 'ant-design-vue'
 import { uploadPictureUsingPost } from '@/api/pictureController'
-import { EditOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, ExperimentOutlined } from '@ant-design/icons-vue'
 import ImageCropper from '@/components/ImageCropper.vue'
+import PictureOutPainting from '@/components/PictureOutPainting.vue'
 
 // 创建传递值的对象
 interface Props {
@@ -97,6 +109,17 @@ const doEditPicture = () => {
 
 const onCropSuccess = (newPicture: API.PictureVO) => {
   // 设置图片
+  props.onSuccess?.(newPicture)
+}
+
+
+
+// 图片扩展
+const expandPictureModalRef = ref()
+const doExpandPicture = () => {
+  expandPictureModalRef.value?.openModal()
+}
+const onExpandSuccess = (newPicture: API.PictureVO) => {
   props.onSuccess?.(newPicture)
 }
 

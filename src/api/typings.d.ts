@@ -5,6 +5,18 @@ declare namespace API {
     message?: string
   }
 
+  type BaseResponseImageExpansionQueryResponse_ = {
+    code?: number
+    data?: ImageExpansionQueryResponse
+    message?: string
+  }
+
+  type BaseResponseImageExpansionResponse_ = {
+    code?: number
+    data?: ImageExpansionResponse
+    message?: string
+  }
+
   type BaseResponseInt_ = {
     code?: number
     data?: number
@@ -132,6 +144,11 @@ declare namespace API {
     filePath?: string
   }
 
+  type getOutPaintingTaskUsingGETParams = {
+    /** taskId */
+    taskId?: string
+  }
+
   type getPictureByIdUsingGETParams = {
     /** id */
     id?: number
@@ -162,6 +179,19 @@ declare namespace API {
     id?: number
   }
 
+  type ImageExpansionQueryResponse = {
+    output?: Output
+    requestId?: string
+    usage?: Usage
+  }
+
+  type ImageExpansionResponse = {
+    code?: string
+    message?: string
+    output?: Output1
+    requestId?: string
+  }
+
   type ImageSearchResult = {
     fromUrl?: string
     objUrl?: string
@@ -178,6 +208,23 @@ declare namespace API {
     userName?: string
     userProfile?: string
     userRole?: string
+  }
+
+  type Output = {
+    code?: string
+    endTime?: string
+    message?: string
+    outputImageUrl?: string
+    scheduledTime?: string
+    submitTime?: string
+    taskId?: string
+    taskMetrics?: TaskMetrics
+    taskStatus?: string
+  }
+
+  type Output1 = {
+    taskId?: string
+    taskStatus?: string
   }
 
   type PagePicture_ = {
@@ -218,6 +265,20 @@ declare namespace API {
     records?: UserVO[]
     size?: number
     total?: number
+  }
+
+  type Parameters = {
+    addWatermark?: boolean
+    angle?: number
+    bestQuality?: boolean
+    bottomOffset?: number
+    leftOffset?: number
+    limitImageSize?: boolean
+    outputRatio?: string
+    rightOffset?: number
+    topOffset?: number
+    xScale?: number
+    yScale?: number
   }
 
   type Picture = {
@@ -261,6 +322,12 @@ declare namespace API {
     introduction?: string
     name?: string
     tags?: string[]
+  }
+
+  type PictureExpansionTaskRequest = {
+    parameters?: Parameters
+    pictureId?: number
+    prompt?: string
   }
 
   type PictureQueryRequest = {
@@ -419,11 +486,21 @@ declare namespace API {
     userId?: number
   }
 
+  type TaskMetrics = {
+    failed?: number
+    succeeded?: number
+    total?: number
+  }
+
   type uploadPictureUsingPOSTParams = {
     fileUrl?: string
     id?: number
     picName?: string
     spaceId?: number
+  }
+
+  type Usage = {
+    imageCount?: number
   }
 
   type User = {

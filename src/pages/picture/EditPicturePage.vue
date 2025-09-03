@@ -12,16 +12,27 @@
     <div class="img-show">
       <img v-if="picture?.url" :src="picture?.url" @click="doEditPicture" />
 
-      <a-button type="primary" ghost :icon="h(EditOutlined)" size="large" @click="doEditPicture"
-        >编辑图片</a-button
-      >
-      <ImageCropper
-        ref="editPictureModalRef"
-        :imageUrl="picture?.rawUrl"
-        :onSuccess="onCropSuccess"
-        :spaceId="picture?.spaceId"
-        :picture="picture"
-      ></ImageCropper>
+      <div class="btn-show">
+        <a-button type="primary" ghost :icon="h(EditOutlined)" size="large" @click="doEditPicture"
+          >编辑图片</a-button
+        >
+        <ImageCropper
+          ref="editPictureModalRef"
+          :imageUrl="picture?.rawUrl"
+          :onSuccess="onCropSuccess"
+          :spaceId="picture?.spaceId"
+          :picture="picture"
+        ></ImageCropper>
+
+        <a-button type="primary" :icon="h(ExperimentOutlined)" size="large" @click="doExpandPicture"
+          >AI扩图</a-button
+        >
+        <PictureOutPainting
+          :picture="picture"
+          ref="expandPictureModalRef"
+          :onSuccess="onExpandSuccess"
+        ></PictureOutPainting>
+      </div>
     </div>
 
     <!-- 图片表单 -->
@@ -82,7 +93,8 @@ import PictureUpload from '@/components/PictureUpload.vue'
 import { message } from 'ant-design-vue'
 import { onMounted, reactive, ref, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { EditOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, ExperimentOutlined } from '@ant-design/icons-vue'
+import PictureOutPainting from '@/components/PictureOutPainting.vue'
 const picture = ref<API.PictureVO>()
 
 // 上传之后的操作
@@ -192,6 +204,15 @@ const editPictureModalRef = ref()
 const doEditPicture = () => {
   editPictureModalRef.value?.openModal()
 }
+
+// 图片扩展
+const expandPictureModalRef = ref()
+const doExpandPicture = () => {
+  expandPictureModalRef.value?.openModal()
+}
+const onExpandSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
 </script>
 
 <style scoped>
@@ -212,5 +233,12 @@ const doEditPicture = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+#EditPicturePage .btn-show {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
 }
 </style>
