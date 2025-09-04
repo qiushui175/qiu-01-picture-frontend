@@ -1,16 +1,37 @@
 <template>
   <div id="space-manage-page">
-
     <a-flex justify="space-between">
       <h2>空间管理</h2>
-      <a-button
-        type="primary"
-        href="/add_space"
-        size="large"
-        target="_blank"
-        style="margin-bottom: 16px"
-        >+ 创建空间</a-button
-      >
+      <a-space>
+        <a-button
+          type="primary"
+          href="/add_space"
+          size="large"
+          target="_blank"
+          style="margin-bottom: 16px"
+          >+ 创建空间</a-button
+        >
+
+        <a-button
+          type="primary"
+          ghost
+          href="/space_analyze?queryAll=1"
+          size="large"
+          target="_blank"
+          style="margin-bottom: 16px"
+          >分析全部空间</a-button
+        >
+
+        <a-button
+          type="primary"
+          ghost
+          href="/space_analyze?queryPublic=1"
+          size="large"
+          target="_blank"
+          style="margin-bottom: 16px"
+          >分析公共空间</a-button
+        >
+      </a-space>
     </a-flex>
 
     <!-- 搜索表单 -->
@@ -40,7 +61,6 @@
     </a-form>
 
     <div style="margin-bottom: 16px"></div>
-
 
     <!-- 表格 -->
     <a-table
@@ -75,6 +95,7 @@
         <template v-else-if="column.key === 'action'">
           <div class="editable-row-operations">
             <a-space wrap>
+              <a-button primary :href="`/space_analyze?spaceId=${record.id}`">分析</a-button>
               <a-button primary @click="edit(record.id)">编辑</a-button>
               <a-button danger @click="confirmDelete(record.id)">删除</a-button>
             </a-space>
@@ -234,9 +255,7 @@ const formattedSize = (size?: number) => {
   if (size < 1024 * 1024 * 1024) return (size / (1024 * 1024)).toFixed(2) + 'MB'
 }
 
-const edit = (id : string) => {
-  
-}
+const edit = (id: string) => {}
 </script>
 
 <style lang="css" scoped></style>

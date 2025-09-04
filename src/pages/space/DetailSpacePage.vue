@@ -14,20 +14,35 @@
             size="small"
           />
         </a-tooltip>
-        <a-button type="primary" :icon="h(PlusOutlined)" :href="`/add_picture?spaceId=${id}`" size="large" target="_blank"
+        <a-button
+          type="primary"
+          :icon="h(PlusOutlined)"
+          :href="`/add_picture?spaceId=${id}`"
+          size="large"
+          target="_blank"
           >上传图片</a-button
         >
 
-        <a-button type="primary" ghost :icon="h(EditOutlined)" size="large" @click="doBatchEdit"
-          >批量编辑</a-button
+        <a-button
+          type="primary"
+          ghost
+          :icon="h(BarChartOutlined)"
+          :href="`/space_analyze?spaceId=${id}`"
+          size="large"
+          target="_blank"
+          >空间分析</a-button
         >
-        <BatchEditPictureModal ref="batchEditPictureModalRef" :spaceId="props.id"
+
+        <a-button :icon="h(EditOutlined)" size="large" @click="doBatchEdit">批量编辑</a-button>
+        <BatchEditPictureModal
+          ref="batchEditPictureModalRef"
+          :spaceId="props.id"
           :pictureList="dataList"
           :onSuccess="onBatchEditSuccess"
         ></BatchEditPictureModal>
       </a-space>
     </a-flex>
-    
+
     <PictureSearchForm :onSearch="onSearch" :onColorChange="onColorChange"></PictureSearchForm>
 
     <PictureList
@@ -54,7 +69,7 @@ import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
 import { onMounted, ref, reactive, h } from 'vue'
 import { useRouter } from 'vue-router'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, PlusOutlined, BarChartOutlined } from '@ant-design/icons-vue'
 
 interface Props {
   id: string | number
@@ -82,7 +97,6 @@ const fetchSpaceDetail = async () => {
   }
 }
 
-
 // 改为计算属性
 const formattedSpaceSize = (size?: number) => {
   if (!size) return '-'
@@ -94,7 +108,10 @@ const formattedSpaceSize = (size?: number) => {
 const loginUserStore = useLoginUserStore()
 
 import PictureList from '@/components/PictureList.vue'
-import { listPictureVoByPageUsingPost, searchPictureByColorUsingPost } from '@/api/pictureController'
+import {
+  listPictureVoByPageUsingPost,
+  searchPictureByColorUsingPost,
+} from '@/api/pictureController'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
 
@@ -142,7 +159,6 @@ const onPageChange = (page: number, pageSize: number) => {
   fetchData()
 }
 
-
 const refresh = () => {
   fetchSpaceDetail()
   fetchData()
@@ -152,8 +168,8 @@ onMounted(() => {
 })
 
 // 查询
-const onSearch = (newSearchParams: API.PictureQueryRequest) =>{
-  Object.keys(newSearchParams).forEach(key => {
+const onSearch = (newSearchParams: API.PictureQueryRequest) => {
+  Object.keys(newSearchParams).forEach((key) => {
     searchParams[key] = newSearchParams[key]
   })
   searchParams.current = 1
@@ -161,11 +177,14 @@ const onSearch = (newSearchParams: API.PictureQueryRequest) =>{
 }
 
 // 按颜色搜索
-const onColorChange = async (color: string)=>{
+const onColorChange = async (color: string) => {
   loading.value = true
 
   // 请求
-  const { data: resData } = await searchPictureByColorUsingPost({picColor: color, spaceId: props.id})
+  const { data: resData } = await searchPictureByColorUsingPost({
+    picColor: color,
+    spaceId: props.id,
+  })
 
   if (resData.code === 0 && resData.data) {
     dataList.value = resData.data ?? []
@@ -178,15 +197,13 @@ const onColorChange = async (color: string)=>{
 
 // 批量修改操作
 const batchEditPictureModalRef = ref()
-const doBatchEdit = () =>{
+const doBatchEdit = () => {
   batchEditPictureModalRef.value?.openModal()
 }
 
-const onBatchEditSuccess = ()=>{
+const onBatchEditSuccess = () => {
   fetchData()
 }
-
-
 </script>
 
 <style scoped>

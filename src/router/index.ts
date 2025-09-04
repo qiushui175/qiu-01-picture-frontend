@@ -15,6 +15,7 @@ import MySpacePage from '@/pages/MySpacePage.vue'
 import DetailSpacePage from '@/pages/space/DetailSpacePage.vue'
 import SearchPicturePage from '@/pages/picture/SearchPicturePage.vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
+import AnalyzeSpacePage from '@/pages/space/AnalyzeSpacePage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -113,9 +114,15 @@ const router = createRouter({
       path: '/search_picture',
       name: '以图搜图',
       component: SearchPicturePage,
-      props: true,
     },
 
+
+    {
+      path: '/space_analyze',
+      name: '空间分析',
+      component: AnalyzeSpacePage,
+      meta: { requiresAuth: true }
+    },
 
     {
       path: '/about',

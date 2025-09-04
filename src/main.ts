@@ -11,6 +11,8 @@ import 'ant-design-vue/dist/reset.css';
 import { VueCropper } from 'vue-cropper';
 import 'vue-cropper/dist/index.css'
 
+import VChart from 'vue-echarts';
+
 // 权限控制
 import '@/access'
 
@@ -24,6 +26,7 @@ app.use(Antd);
 // app.use(VueCropper)
 // 全局注册组件（关键步骤）
 app.component('VueCropper', VueCropper)
+app.component('v-chart', VChart); 
 
 app.mount('#app')
 
