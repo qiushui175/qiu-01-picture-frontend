@@ -21,7 +21,7 @@
         >编辑图片</a-button
       >
 
-      <a-button type="primary" :icon="h(ExperimentOutlined)" size="large" @click="doExpandPicture"
+      <a-button type="primary" :icon="h(ExperimentOutlined)" size="large" @click="doExpandPicture" v-if="picture?.url"
           >AI扩图</a-button
         >
     </div>
