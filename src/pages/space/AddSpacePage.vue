@@ -1,7 +1,7 @@
 <template>
   <div id="AddSpacePage">
     <!-- 标题 -->
-    <h2 style="margin-bottom: 16px">创建空间</h2>
+    <h2 style="margin-bottom: 16px">创建空间（{{ SPACE_TYPE_MAP[spaceType] }}）</h2>
 
     <!-- 空间表单 -->
     <a-form layout="vertical" :model="spaceForm" @finish="handleFinish">
@@ -44,10 +44,11 @@
 import { addSpaceUsingPost, listSpaceLevelUsingGet } from '@/api/spaceController'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { SPACE_LEVEL_OPTIONS } from '@/constants/space'
+import { SPACE_TYPE_ENUM, SPACE_TYPE_MAP } from '@/utils'
 const space = ref<API.SpaceVO>()
 const router = useRouter()
 const loading = ref(false)
@@ -81,6 +82,7 @@ const handleFinish = async (values: any) => {
 
   const { data: resData } = await addSpaceUsingPost({
     ...spaceForm,
+    spaceType: spaceType.value
   })
 
   if (resData.code === 0 && resData.data) {
@@ -119,6 +121,15 @@ const formattedSize = (size?: number) => {
   if (size < 1024 * 1024 * 1024) return (size / (1024 * 1024)).toFixed(2) + 'MB'
   return (size / (1024 * 1024 * 1024)).toFixed(2) + 'GB'
 }
+
+// 获取需要添加的空间类型，默认添加私有空间
+const route = useRoute();
+const spaceType = computed(()=>{
+  if(route.query?.type){
+    return Number(route.query?.type)
+  }
+  return SPACE_TYPE_ENUM.PRIVATE
+})
 </script>
 
 <style scoped>

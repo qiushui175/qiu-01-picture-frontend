@@ -77,6 +77,21 @@ export async function getSpaceVoByIdUsingGet(
   })
 }
 
+/** listMySpaceVOByPage POST /api/space/list_my/page/vo */
+export async function listMySpaceVoByPageUsingPost(
+  body: API.SpaceQueryRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponsePageSpaceVO_>('/api/space/list_my/page/vo', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** listSpaceLevel GET /api/space/list/level */
 export async function listSpaceLevelUsingGet(options?: { [key: string]: any }) {
   return request<API.BaseResponseListSpaceLevel_>('/api/space/list/level', {

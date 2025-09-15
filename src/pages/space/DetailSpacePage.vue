@@ -2,7 +2,9 @@
   <div id="detail-space-page">
     <!-- 空间信息 -->
     <a-flex justify="space-between" align="middle">
-      <h2 id="spaceName">{{ space?.spaceName }}（私有空间）</h2>
+      <h2 id="spaceName">
+        {{ space?.spaceName }}{{ isPrivate ? '（私有空间）' : '（团队空间）' }}
+      </h2>
 
       <a-space size="middle">
         <a-tooltip
@@ -20,7 +22,22 @@
           :href="`/add_picture?spaceId=${id}`"
           size="large"
           target="_blank"
+          v-if="canUpload"
           >上传图片</a-button
+        >
+
+        <a-button
+          type="primary"
+          ghost
+          :icon="h(TeamOutlined)"
+          :href="`/spaceUserManage/${id}`"
+          size="large"
+          target="_blank"
+          v-if="
+            space?.permissionList?.includes(SPACE_PERMISSION_ENUM.SPACE_USER_MANAGE) &&
+            space.spaceType == 1
+          "
+          >空间成员</a-button
         >
 
         <a-button
@@ -30,10 +47,11 @@
           :href="`/space_analyze?spaceId=${id}`"
           size="large"
           target="_blank"
+          v-if="canManageSpaceUser"
           >空间分析</a-button
         >
 
-        <a-button :icon="h(EditOutlined)" size="large" @click="doBatchEdit">批量编辑</a-button>
+        <a-button :icon="h(EditOutlined)" size="large" @click="doBatchEdit" v-if="canEditPicture">批量编辑</a-button>
         <BatchEditPictureModal
           ref="batchEditPictureModalRef"
           :spaceId="props.id"
@@ -48,7 +66,7 @@
     <PictureList
       :dataList="dataList"
       :loading="loading"
-      :showOp="true"
+      :showOp="canEditPicture"
       :showSearch="true"
       :refresh="refresh"
     ></PictureList>
@@ -67,9 +85,9 @@
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
-import { onMounted, ref, reactive, h } from 'vue'
-import { useRouter } from 'vue-router'
-import { EditOutlined, PlusOutlined, BarChartOutlined } from '@ant-design/icons-vue'
+import { onMounted, ref, reactive, h, watch, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { EditOutlined, PlusOutlined, BarChartOutlined, TeamOutlined } from '@ant-design/icons-vue'
 
 interface Props {
   id: string | number
@@ -78,6 +96,10 @@ const props = defineProps<Props>()
 const space = ref<API.SpaceVO>()
 
 const router = useRouter()
+const route = useRoute()
+const isPrivate = computed(()=>{
+  return route.query.private
+})
 const fetchSpaceDetail = async () => {
   try {
     const { data: resData } = await getSpaceVoByIdUsingGet({ id: props.id })
@@ -114,6 +136,7 @@ import {
 } from '@/api/pictureController'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
+import { SPACE_PERMISSION_ENUM } from '@/utils'
 
 const dataList = ref<API.PictureVO[]>([])
 const loading = ref(true)
@@ -204,6 +227,25 @@ const doBatchEdit = () => {
 const onBatchEditSuccess = () => {
   fetchData()
 }
+
+// 监听页面id变化
+watch(()=> props.id, ()=>{
+  fetchSpaceDetail()
+  fetchData()
+})
+
+
+// 定义权限控制
+function createPermissionChecker(permission: string){
+  return computed(()=>{
+  return space.value?.permissionList?.includes(permission)
+})
+}
+
+const canEditPicture = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_EDIT)
+const canManageSpaceUser = createPermissionChecker(SPACE_PERMISSION_ENUM.SPACE_USER_MANAGE)
+const canUpload = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_UPLOAD)
+
 </script>
 
 <style scoped>

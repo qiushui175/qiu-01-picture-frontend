@@ -16,6 +16,7 @@ import DetailSpacePage from '@/pages/space/DetailSpacePage.vue'
 import SearchPicturePage from '@/pages/picture/SearchPicturePage.vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import AnalyzeSpacePage from '@/pages/space/AnalyzeSpacePage.vue'
+import SpaceUserManagePage from '@/pages/admin/SpaceUserManagePage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,6 +65,13 @@ const router = createRouter({
       path: '/admin/spaceManage',
       name: '空间管理',
       component: SpaceManagePage,
+    },
+
+    {
+      path: '/spaceUserManage/:spaceId',
+      name: '空间成员管理',
+      component: SpaceUserManagePage,
+      props: true,
       meta: { requiresAuth: true }
     },
 

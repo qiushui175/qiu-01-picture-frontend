@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { listSpaceVoByPageUsingPost } from '@/api/spaceController'
+import { listMySpaceVoByPageUsingPost } from '@/api/spaceController'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
 import { onMounted } from 'vue'
@@ -25,17 +25,20 @@ const checkUserSpace = async () => {
   }
 
   // 若用户登录则获取已创建空间
-  const res = await listSpaceVoByPageUsingPost({
+  // const res = await listSpaceVoByPageUsingPost({
+  //   userId: loginUser.id,
+  // })
+
+  const res = await listMySpaceVoByPageUsingPost({
     userId: loginUser.id,
   })
 
   if (res.data.code === 0) {
     const data = res.data.data
-    // console.log(res.data)
     if (data?.records?.length > 0) {
       // 转跳到对应空间
       const space = data?.records[0]
-      router.replace(`/space/${space?.id}`)
+      router.replace(`/space/${space?.id}?private=1`)
     } else {
       router.replace('/add_space')
       message.warn('请先创建空间！')

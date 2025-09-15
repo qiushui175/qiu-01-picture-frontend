@@ -55,6 +55,16 @@
         </a-input>
       </a-form-item>
 
+      <a-form-item label="空间类型">
+        <a-select
+          v-model:value="searchParams.spaceType"
+          allow-clear
+          placeholder="选择空间类型"
+          style="min-width: 140px"
+          :options="SPACE_TYPE_OPTIONS"
+        ></a-select>
+      </a-form-item>
+
       <a-form-item>
         <a-button type="primary" html-type="submit"> 查询 </a-button>
       </a-form-item>
@@ -89,8 +99,12 @@
           <div>数量：{{ record.totalCount }} / {{ record.maxCount }}</div>
         </template>
 
+        <template v-else-if="column.dataIndex === 'spaceType'">
+          <a-tag :color="record.spaceType == 0 ? 'green' : 'blue'">{{ SPACE_TYPE_MAP[record.spaceType] }}</a-tag>
+        </template>
+
         <template v-else-if="column.dataIndex === 'spaceLevel'">
-          <div>{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</div>
+          <a-tag :color="getColorForSpaceLevel(record.spaceLevel)">{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</a-tag>
         </template>
         <template v-else-if="column.key === 'action'">
           <div class="editable-row-operations">
@@ -112,6 +126,7 @@ import { message, Modal } from 'ant-design-vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import dayjs from 'dayjs'
 import { SPACE_LEVEL_MAP, SPACE_LEVEL_OPTIONS } from '@/constants/space'
+import { SPACE_TYPE_MAP, SPACE_TYPE_OPTIONS } from '@/utils'
 
 // 定义数据
 const columns = [
@@ -130,13 +145,21 @@ const columns = [
     title: '空间级别',
     dataIndex: 'spaceLevel',
     align: 'center',
-    width: 200,
+    width: 100,
   },
+
+  {
+    title: '空间类型',
+    dataIndex: 'spaceType',
+    align: 'center',
+    width: 100,
+  },
+
   {
     title: '使用情况',
     dataIndex: 'spaceUseInfo',
     align: 'center',
-    width: 200,
+    width: 280,
   },
 
   {
@@ -253,6 +276,12 @@ const formattedSize = (size?: number) => {
   if (size < 1024) return size + 'B'
   if (size < 1024 * 1024) return (size / 1024).toFixed(2) + 'KB'
   if (size < 1024 * 1024 * 1024) return (size / (1024 * 1024)).toFixed(2) + 'MB'
+}
+
+// 获取不同版本的标签颜色
+const tagColor = ["cyan", "purple", "orange"]
+const getColorForSpaceLevel = (level: number)=>{
+  return tagColor[level]
 }
 
 const edit = (id: string) => {}
