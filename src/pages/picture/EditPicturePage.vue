@@ -22,6 +22,7 @@
           :onSuccess="onCropSuccess"
           :spaceId="picture?.spaceId"
           :picture="picture"
+          :space="space"
         ></ImageCropper>
 
         <a-button type="primary" :icon="h(ExperimentOutlined)" size="large" @click="doExpandPicture"
@@ -91,10 +92,11 @@ import {
 import ImageCropper from '@/components/ImageCropper.vue'
 import PictureUpload from '@/components/PictureUpload.vue'
 import { message } from 'ant-design-vue'
-import { onMounted, reactive, ref, h } from 'vue'
+import { onMounted, reactive, ref, h, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { EditOutlined, ExperimentOutlined } from '@ant-design/icons-vue'
 import PictureOutPainting from '@/components/PictureOutPainting.vue'
+import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 const picture = ref<API.PictureVO>()
 
 // 上传之后的操作
@@ -213,6 +215,22 @@ const doExpandPicture = () => {
 const onExpandSuccess = (newPicture: API.PictureVO) => {
   picture.value = newPicture
 }
+
+// 获取空间信息
+const space = ref<API.SpaceVO>()
+const fetchSpace = async () => {
+  if (picture.value?.spaceId) {
+    const { data: resData } = await getSpaceVoByIdUsingGet({ id: picture.value?.spaceId })
+    if (resData.code === 0 && resData.data) {
+      space.value = resData.data
+    } else {
+      message.error(resData.message || '空间信息获取失败')
+    }
+  }
+}
+watchEffect(()=>{
+  fetchSpace()
+})
 </script>
 
 <style scoped>

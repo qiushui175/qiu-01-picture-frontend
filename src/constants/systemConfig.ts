@@ -1,0 +1,1 @@
+export const SYSTEM_BASE_URL = "localhost:8080"

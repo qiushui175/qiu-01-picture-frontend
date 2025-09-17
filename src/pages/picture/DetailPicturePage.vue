@@ -88,7 +88,11 @@
               >分享</a-button
             >
 
-            <a-button :icon="h(EditOutlined)" v-if="canEdit" type="default" @click="handleEdit"
+            <a-button
+              :icon="h(EditOutlined)"
+              v-if="canEdit || canEditPictureForSpaceUser"
+              type="default"
+              @click="handleEdit"
               >编辑</a-button
             >
 
@@ -129,7 +133,11 @@
               >解锁</a-button
             >
 
-            <a-button :icon="h(DeleteOutlined)" v-if="canEdit" danger @click="confirmDelete"
+            <a-button
+              :icon="h(DeleteOutlined)"
+              v-if="canEdit || canDeletePictureForSpaceUser"
+              danger
+              @click="confirmDelete"
               >删除</a-button
             >
           </a-space>
@@ -145,10 +153,11 @@ import {
   getPictureVoByIdUsingGet,
   pictureReviewUsingPost,
 } from '@/api/pictureController'
+import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import ShareModal from '@/components/ShareModal.vue'
 import { PIC_REVIEW_STATUS_ENUM } from '@/constants/picture'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
-import { downloadImage } from '@/utils'
+import { downloadImage, SPACE_PERMISSION_ENUM } from '@/utils'
 import {
   DeleteOutlined,
   DownloadOutlined,
@@ -158,7 +167,7 @@ import {
   UnlockOutlined,
 } from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
-import { computed, onMounted, ref, h } from 'vue'
+import { computed, onMounted, ref, h, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 interface Props {
@@ -189,6 +198,7 @@ const fetchPictureDetail = async () => {
 
 onMounted(() => {
   fetchPictureDetail()
+  // fetchSpaceDetail()
 })
 
 // 改为计算属性
@@ -208,13 +218,52 @@ const canEdit = computed(() => {
     return false
   }
 
+  if (loginUser.userRole === 'admin') return true
+
   const user = picture.value?.user || {}
-  return loginUser.id === user.id || loginUser.userRole === 'admin'
+
+  return loginUser.id === user?.id
 })
+
+const space = ref<API.SpaceVO>()
+const fetchSpaceDetail = async () => {
+  try {
+    const { data: resData } = await getSpaceVoByIdUsingGet({ id: picture.value?.spaceId })
+    if (resData.code === 0) {
+      space.value = resData.data
+    } else {
+      message.error('空间信息获取失败')
+      router.push({
+        path: '/',
+      })
+    }
+  } catch (error) {
+    message.error('空间信息获取失败')
+    router.push({
+      path: '/',
+    })
+  }
+}
+// 定义权限控制
+function createPermissionChecker(permission: string) {
+  return computed(() => {
+    return space.value?.permissionList?.includes(permission)
+  })
+}
+
+const canEditPictureForSpaceUser = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_EDIT)
+const canDeletePictureForSpaceUser = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_DELETE)
+
+watch(
+  picture,
+  () => {
+    fetchSpaceDetail()
+  },
+)
 
 // 编辑
 const handleEdit = () => {
-  if (!canEdit.value) {
+  if (!canEdit.value && !canEditPictureForSpaceUser) {
     message.error('无权限')
     return
   }
@@ -227,7 +276,7 @@ const handleEdit = () => {
 
 // 删除
 const handleDelete = async () => {
-  if (!canEdit.value) {
+  if (!canEdit.value  && !canDeletePictureForSpaceUser) {
     message.error('无权限')
     return
   }
@@ -346,7 +395,7 @@ const shareModalRef = ref()
 const shareLink = ref<string>()
 const handleShare = () => {
   shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.value?.id}`
-  if(shareModalRef.value){
+  if (shareModalRef.value) {
     shareModalRef.value.openModal()
   }
 }

@@ -1,10 +1,11 @@
 import { message } from 'ant-design-vue';
 import axios from 'axios';
+import { SYSTEM_BASE_URL } from './constants/systemConfig';
 
 // 创建实例
 const myAxios = axios.create({
   // 如果后续要用生成代码，则这里不需要加api前缀
-  baseURL: 'http://localhost:8080',
+  baseURL: 'http://' + SYSTEM_BASE_URL,
   timeout: 60000,
   withCredentials: true,
 });
